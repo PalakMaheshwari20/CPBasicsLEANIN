@@ -1,0 +1,170 @@
+ANANYA SINGH- MILESTONE 4
+
+
+Q1. https://leetcode.com/problems/majority-element
+
+class Solution {
+    public int majorityElement(int[] nums) {
+        HashMap<Integer,Integer> numFreq = new HashMap<>();
+        for(int num : nums) {
+            if (!numFreq.containsKey(num)) {
+                numFreq.put(num, 1);                    
+            }
+            else {
+                numFreq.put(num, numFreq.get(num) + 1);
+            }
+            if (numFreq.get(num) > (nums.length / 2)) 
+                return num;
+        }
+        return -1;    
+    }
+}
+
+
+
+
+Q2.  https://leetcode.com/problems/non-overlapping-intervals
+
+class Solution {
+    public int eraseOverlapIntervals(int[][] intervals) {
+        int res=0;
+        Arrays.sort(intervals, (a,b)->a[1]-b[1]); 
+        int prevStart = intervals[0][0]; 
+        int prevEnd = intervals[0][1]; 
+        for(int i=1;i<intervals.length; i++){
+            int newStart = intervals[i][0];
+            int newEnd = intervals[i][1];
+            if(newStart<=prevStart || newStart<prevEnd) res++;
+            else{
+                prevStart = newStart;
+                prevEnd = newEnd;
+            }
+        }
+        return res;
+    }
+}
+
+
+
+
+Q3. https://leetcode.com/problems/kth-largest-element-in-an-array
+
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<Integer>((a,b) -> (b-a));
+        for(int  i: nums){
+            maxHeap.offer(i);
+        }
+        while(k != 1){
+            maxHeap.poll();
+            k--;
+        }
+        return maxHeap.poll();
+    }
+}
+
+
+
+
+Q4. https://leetcode.com/problems/sort-an-array
+
+class Solution {
+    public int[] sortArray(int[] nums) {
+        sort(0, nums.length-1, nums);
+        return nums;
+    }
+    
+    private void sort(int lo, int hi, int[] nums) {
+        if (lo >= hi) return;
+        int j = partition(lo, hi, nums);
+        sort(lo,j-1,nums);
+        sort(j+1,hi,nums);
+    }
+    
+    private int partition(int lo, int hi, int[] nums) {
+        int i = lo; int j = hi+1;
+        while (true) {
+            while(nums[++i] < nums[lo]) if (i == hi) break;
+            while(nums[--j] > nums[lo]) if (j == lo) break;
+            if (i >= j) break;
+            swap(i,j,nums);
+        }
+        swap(lo,j,nums);                
+        return j;
+    }
+    
+    private void swap(int i, int j, int[] nums) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+
+
+
+
+Q5. https://leetcode.com/problems/hand-of-straights
+
+class Solution {
+    public boolean isNStraightHand(int[] hand, int W) {
+        if (hand.length % W != 0) {
+            return false;
+        }
+        
+        Arrays.sort(hand);
+        Map<Integer, Integer> frequencyMap = new HashMap<>(hand.length);
+        for (int i : hand) {
+            frequencyMap.put(i, frequencyMap.getOrDefault(i, 0) + 1);
+        }
+        
+        for (int i : hand) {
+            if (frequencyMap.get(i) > 0) {
+                int remaining = 1;
+                boolean hasOtherElements = true;
+                while (remaining < W) {
+                    hasOtherElements = hasOtherElements && (frequencyMap.getOrDefault(i + remaining, 0) > 0);
+                    if (!hasOtherElements) {
+                        return false;
+                    }
+                    frequencyMap.put(i + remaining, frequencyMap.get(i + remaining) - 1);
+                    remaining++;
+                }
+                frequencyMap.put(i, frequencyMap.get(i) - 1);
+            }
+        }
+        return true;
+    }
+}
+
+
+
+
+Q6. https://leetcode.com/problems/string-without-aaa-or-bbb
+
+class Solution {
+    public String strWithout3a3b(int a, int b) {
+        StringBuilder out = new StringBuilder();
+        boolean isA = a >= b;
+        while (a > 0 || b > 0) {
+            if (isA) {
+                out.append('a');
+                a--;
+                if (a >= b && a > 0) {
+                    out.append('a');
+                    a--;
+                }
+                isA = false;
+            } else {
+                out.append('b');
+                b--;
+                if (b >= a && b > 0) {
+                    out.append('b');
+                    b--;
+                }
+                isA = true;
+            }
+        }
+        return out.toString();
+    }
+}
